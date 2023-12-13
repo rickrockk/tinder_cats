@@ -55,31 +55,42 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Flexible(
             flex: 4,
-            child: Center(
-              child: Card(
-                clipBehavior: Clip.hardEdge,
-                elevation: 14,
-                child: SizedBox.square(
-                  dimension: 300,
-                  child: Builder(
-                    builder: (context) {
-                      if (randomCat == null) {
-                        return Center(
-                          child: CircularProgressIndicator(color: Colors.pink.shade200),
-                        );
-                      }
-
-                      return Image.network(
-                        randomCat!,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(imageUrl: randomCat),
+                  ),
+                );
+              },
+              child: Hero(
+                tag: 'imageHero',
+                child: Card(
+                  clipBehavior: Clip.hardEdge,
+                  elevation: 14,
+                  child: SizedBox.square(
+                    dimension: 300,
+                    child: Builder(
+                      builder: (context) {
+                        if (randomCat == null) {
                           return Center(
                             child: CircularProgressIndicator(color: Colors.pink.shade200),
                           );
-                        },
-                      );
-                    },
+                        }
+
+                        return Image.network(
+                          randomCat!,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(color: Colors.pink.shade200),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -150,3 +161,42 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
+
+class DetailScreen extends StatelessWidget {
+  final String? imageUrl;
+
+  const DetailScreen({Key? key, this.imageUrl}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Hero(
+                tag: 'imageHero',
+                child: Image.network(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  width: MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.height
+                      : null,
+                ),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Возвращает на предыдущий экран
+                },
+                child: Text('Назад'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
