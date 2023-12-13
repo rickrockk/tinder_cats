@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lecture_1_app/model/cat_model.dart';
+import 'package:lecture_1_app/cubit/favorites_page.dart';
 import 'package:lecture_1_app/service/service.dart';
+import 'package:lecture_1_app/cubit/favorites_cubit.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (_) => FavoritesCubit([]), // Передача пустого списка в качестве начального состояния
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -32,13 +39,34 @@ class _MyHomePageState extends State<MyHomePage> {
   final service = Service();
   CatsModel? cats;
   String? randomCat;
+  late FavoritesCubit favoritesCubit;
+
+  List<CatsModel> favoriteCats = [];
 
   @override
   void initState() {
     super.initState();
+    favoritesCubit = BlocProvider.of<FavoritesCubit>(context);
+
     service.getCats().then((value) {
       cats = value;
       getRandomCat();
+    });
+  }
+
+  void _navigateToFavorites(BuildContext context, List<CatsModel> cats) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FavoritesPage(favoriteCats: cats),
+      ),
+    );
+  }
+
+  void addToFavorites(CatsModel cat) {
+    setState(() {
+      favoriteCats.add(cat);
+      favoritesCubit.addToFavorites(cat);
     });
   }
 
@@ -103,6 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   FloatingActionButton.large(
                     onPressed: () {
                       getRandomCat();
+                      if (randomCat != null) {
+                        final cat = CatsModel(imgUrls: [randomCat!]);
+                        addToFavorites(cat);
+                      }
                     },
                     backgroundColor: Colors.green,
                     child: const Icon(
@@ -133,7 +165,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.white,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (randomCat != null) {
+                    _navigateToFavorites(context, favoriteCats);
+                  }
+                },
               ),
             ),
           ),
