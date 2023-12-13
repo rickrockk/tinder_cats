@@ -36,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final service = Service();
+  final service = ApiCatService();
   CatsModel? cats;
   String? randomCat;
   late FavoritesCubit favoritesCubit;
