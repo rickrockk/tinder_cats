@@ -34,24 +34,46 @@ class _MyHomePageState extends State<MyHomePage> {
   String? randomCat;
 
   @override
-  void initState() {
-    super.initState();
-    service.getCats().then((value) {
-      cats = value;
-      getRandomCat();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.orange[200],
         title: const Text('Котики'),
       ),
-      backgroundColor: Colors.pink.shade200,
+      backgroundColor: Colors.yellow[200],
       body: Column(
         children: [
+          Container(
+            padding: const EdgeInsets.only(top: 25),
+            child: const Text(
+              "Главная",
+              style: TextStyle(fontSize: 22, color: Colors.black87),
+            ),
+          ),
+          Flexible(
+            child: Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pink[200],
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                ),
+                icon: const Icon(
+                  Icons.favorite_outline,
+                  size: 24,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  'Check favorites',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ),
           Flexible(
             flex: 4,
             child: Center(
@@ -64,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     builder: (context) {
                       if (randomCat == null) {
                         return Center(
-                          child: CircularProgressIndicator(color: Colors.pink.shade200),
+                          child: CircularProgressIndicator(
+                              color: Colors.yellow[200]),
                         );
                       }
 
@@ -74,7 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Center(
-                            child: CircularProgressIndicator(color: Colors.pink.shade200),
+                            child: CircularProgressIndicator(
+                                color: Colors.yellow[200]),
                           );
                         },
                       );
@@ -114,29 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          Flexible(
-            child: Center(
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                ),
-                icon: const Icon(
-                  Icons.favorite_outline,
-                  size: 24,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  'Check favorites',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: () {},
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -146,6 +147,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       cats!.imgUrls.shuffle();
       randomCat = cats!.imgUrls.first;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    service.getCats().then((value) {
+      cats = value;
+      getRandomCat();
     });
   }
 }
