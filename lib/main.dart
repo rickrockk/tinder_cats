@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lecture_1_app/model/cat_model.dart';
 import 'package:lecture_1_app/service/service.dart';
+import 'package:lecture_1_app/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const SplashScreen(),
     );
   }
 }
