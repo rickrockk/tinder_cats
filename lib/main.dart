@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lecture_1_app/model/cat_model.dart';
+import 'package:lecture_1_app/model/user_model.dart';
 import 'package:lecture_1_app/service/service.dart';
+import 'package:lecture_1_app/storage/cat-storage.dart';
+import 'package:lecture_1_app/storage/storage.dart';
+import 'package:lecture_1_app/storage/user-storage.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Storage storage = Storage();
+
   runApp(const MyApp());
 }
 
@@ -30,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final service = Service();
-  CatsModel? cats;
+  Cat? cats;
   String? randomCat;
 
   @override

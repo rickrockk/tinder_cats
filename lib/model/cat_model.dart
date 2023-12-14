@@ -1,11 +1,13 @@
-class CatsModel {
-  final List<String> imgUrls;
+class Cat {
+  final String uri;
 
-  CatsModel({required this.imgUrls});
+  Cat({required this.uri});
 
-  factory CatsModel.fromJson(Map<String, dynamic> json) => CatsModel(
-        imgUrls: List.from(
-          json['data'],
-        ),
-      );
+  factory Cat.fromJson(Map<String, dynamic> json) => Cat(
+    uri: json['uri'],
+  );
+
+  Map<String, dynamic> toJson() => {
+    'uri': uri,
+  };
 }
