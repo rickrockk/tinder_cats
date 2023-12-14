@@ -5,6 +5,7 @@ import 'package:lecture_1_app/api/api.dart';
 import 'package:lecture_1_app/model/cat_model.dart';
 import 'package:lecture_1_app/model/user_model.dart';
 import 'package:lecture_1_app/storage/storage.dart';
+import 'package:dart_ping/dart_ping.dart';
 
 const path = 'assets/cats_imgs.json';
 
@@ -24,6 +25,8 @@ abstract class AbstractService {
   Future<List<Cat>> loadCats({int limit = 10});
 
   Future<Cat?> getRandomCat();
+
+  Future<void> getInternetStatus();
 }
 
 class Service implements AbstractService {
@@ -58,6 +61,7 @@ class Service implements AbstractService {
     }
 
     user.likeCat(cat);
+    storage.removeCatFromFeed(cat);
 
     storage.saveUser(user);
   }
@@ -78,6 +82,7 @@ class Service implements AbstractService {
     }
 
     user.unlikeCat(cat);
+    storage.addCatToFeed(cat);
 
     storage.saveUser(user);
   }
@@ -113,11 +118,17 @@ class Service implements AbstractService {
     }
 
     final cat = storage.getRandomCat();
-    if (cat == null) {
-      throw Exception('No cats available');
-    }
-
     return cat;
+  }
+
+  @override
+  Future<void> getInternetStatus() async {
+    final pingResult = await Ping('google.com', count: 1).stream.first;
+    if (pingResult.error != null) {
+      storage.setNetworkStatus(false);
+    } else {
+      storage.setNetworkStatus(true);
+    }
   }
 
 

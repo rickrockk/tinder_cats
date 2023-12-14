@@ -18,6 +18,10 @@ abstract class AbstractStorage {
 
   Future<Cat?> getRandomCat();
 
+  Future<void> addCatToFeed(Cat cat);
+
+  Future<void> removeCatFromFeed(Cat cat);
+
   Future<User?> getUser(String name);
 
   Future<User?> getActiveUser();
@@ -78,6 +82,30 @@ class Storage implements AbstractStorage {
       return null;
     }
     return Cat.fromJson(jsonDecode(catJson));
+  }
+
+  @override
+  Future<void> addCatToFeed(Cat cat) async {
+    final prefs = await this.prefs;
+    final cats = prefs.getStringList('cats');
+    if (cats == null) {
+      prefs.setStringList('cats', [cat.uri]);
+    } else {
+      cats.add(cat.uri);
+      prefs.setStringList('cats', cats);
+    }
+  }
+
+  @override
+  Future<void> removeCatFromFeed(Cat cat) async {
+    final prefs = await this.prefs;
+    final cats = prefs.getStringList('cats');
+    if (cats == null) {
+      return;
+    } else {
+      cats.remove(cat.uri);
+      prefs.setStringList('cats', cats);
+    }
   }
 
   @override
